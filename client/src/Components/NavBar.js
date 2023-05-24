@@ -5,13 +5,13 @@ function Navbar(){
     return <nav className="nav">
         <ul>
             <li>
-                <Link to='/ingredients'>ingredients</Link>
+                <Link to='/ingredients'>Add Ingredients</Link>
             </li>
             <li>
-                <Link to='/recipes'>Recipes</Link>
+                <Link to='/recipes'>Add Recipes</Link>
             </li>
             <li>
-                <Link to='/recipe_menu'>Menu</Link>
+                <Link to='/recipe_menu'>My Menu</Link>
             </li>
             <li>
                 <Link to='/home'>Home</Link>
