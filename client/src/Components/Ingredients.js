@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 function Ingredients({ addIngredient, userInfo, setUserInfo }) {
   const navigate = useNavigate();
 
-//   const recipeIds = userInfo.recipes.map(recipe => recipe.id);
-    // console.log(recipeIds);
+  const recipeIds = userInfo.recipes.map(recipe => recipe.id);
+    console.log(recipeIds);
   
   const formik = useFormik({
     initialValues: {
