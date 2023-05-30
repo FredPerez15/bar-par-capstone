@@ -15,7 +15,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       const response = await fetch(`http://127.0.0.1:5000/recipes/${recipeId}`, requestOptions);
       if (response.ok) {
         const updatedRecipes = userInfo.recipes.filter((recipe) => recipe.id !== recipeId);
-        const updatedIngredients = userInfo.ingredients.filter((ingredient) => ingredient.recipe_id !== recipeId);
+        const updatedIngredients = userInfo.recipes.ingredients.filter((ingredient) => ingredient.recipe_id !== recipeId);
         setUserInfo((prevUserInfo) => ({
           ...prevUserInfo,
           recipes: updatedRecipes,
@@ -70,9 +70,9 @@ function RecipeMenu({ userInfo, setUserInfo }) {
     setUpdatedData({});
   };
 
-  if (!userInfo || !userInfo.recipes || !userInfo.ingredients) {
-    return null; // Render null or a loading indicator while waiting for data
-  }
+  // if (!userInfo || !userInfo.recipes || !userInfo.ingredients) {
+  //   return null; // Render null or a loading indicator while waiting for data
+  // }
 
 
   return (
@@ -83,11 +83,9 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           <p>{item.name}</p>
           <p>{item.description}</p>
           <h4>Ingredients:</h4>
-          {userInfo.recipes.ingredients
-            .filter((ingredient) => ingredient.recipe_id === item.id)
-            .map((ingredient) => (
+          {userInfo.recipes.find((recipe) => recipe.id === item.id)?.ingredients.map((ingredient) => (
               <p key={ingredient.id}>{ingredient.name}</p>
-            ))}
+              ))}
           <button onClick={() => handleDelete(item.id)}>Remove</button>
           {selectedItemId === item.id ? (
             <div>
