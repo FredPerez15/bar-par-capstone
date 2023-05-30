@@ -97,12 +97,12 @@
 
 // export default Ingredients;
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 
-function Ingredients({ addIngredient, userInfo, setUserInfo, ingredient, setIngredient }) {
+function Ingredients({ addIngredient }) {
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -126,15 +126,9 @@ function Ingredients({ addIngredient, userInfo, setUserInfo, ingredient, setIngr
         const response = await fetch('http://127.0.0.1:5000/ingredients', requestOptions);
         if (response.ok) {
           const createdIngredient = await response.json();
-
-          // Update the user info with the new ingredient
-          setUserInfo((prevUserInfo) => ({
-            ...prevUserInfo,
-            ingredients: [...prevUserInfo.recipes.ingredients, createdIngredient],
-          }));
-
-          setIngredient(values);
-
+  
+          addIngredient(createdIngredient);
+  
           formik.resetForm();
           navigate('/ingredients');
         } else {
@@ -145,7 +139,7 @@ function Ingredients({ addIngredient, userInfo, setUserInfo, ingredient, setIngr
       }
     },
   });
-
+  
   return (
     <>
       <h1>Welcome to Ingredients page</h1>

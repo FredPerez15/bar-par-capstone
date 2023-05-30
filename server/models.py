@@ -50,9 +50,8 @@ class Recipe(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    inventories = db.relationship('Inventory', backref='recipe', cascade='all, delete, delete-orphan')
-    ingredients = association_proxy('inventories', 'recipe')
-
+    inventories = db.relationship('Inventory', back_populates='recipes', lazy=True, cascade='all, delete, delete-orphan')
+    ingredients = db.relationship('Ingredient', back_populates='recipes', lazy=True)
     @validates('name')
     def valid_username(self, key, name):
         if not name:
@@ -71,6 +70,8 @@ class Ingredient(db.Model, SerializerMixin):
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    recipes = db.relationship('Recipe', back_populates='ingredients', lazy=True)
 
     @validates('name')
     def valid_username(self, key, name):
@@ -95,6 +96,8 @@ class Inventory(db.Model, SerializerMixin):
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id')) 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    recipes = db.relationship('Recipe', back_populates='inventories', lazy=True)
 
     @validates('quantity')
     def valid_username(self, key, quantity):
