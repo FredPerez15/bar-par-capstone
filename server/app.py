@@ -49,19 +49,49 @@ class Recipes(Resource):
         recipe = [recipe.to_dict() for recipe in Recipe.query.all()]
         return recipe
 
+    # def post(self):
+    #     data = request.get_json()
+    #     try:
+    #         new_rec = Recipe(
+    #             name = data['name'],
+    #             description = data['description'],
+    #             user_id= data['user_id']
+    #         )
+    #         db.session.add(new_rec)
+    #         db.session.commit()
+    #         return make_response(new_rec.to_dict(), 201)
+    #     except Exception as ex:
+    #             return make_response({"errors": [ex.__str__()]}, 400)
+
     def post(self):
         data = request.get_json()
         try:
-            new_rec = Recipe(
-                name = data['name'],
-                description = data['description'],
-                user_id= data['user_id']
+            # Create the recipe instance
+            new_recipe = Recipe(
+                name=data['name'],
+                description=data['description'],
+                user_id=data['user_id']
             )
-            db.session.add(new_rec)
+
+            db.session.add(new_recipe)
+            db.session.flush()
+
+            # Create the ingredients and inventories
+            for ingredient_id in data['ingredients']:
+                ingredient = Ingredient.query.get(ingredient_id)
+                new_inventory = Inventory(
+                    ingredient_id=ingredient.id,
+                    recipe_id=new_recipe.id,
+                    quantity=1
+                )
+
+                db.session.add(new_inventory)
+
             db.session.commit()
-            return make_response(new_rec.to_dict(), 201)
+
+            return make_response(new_recipe.to_dict(), 201)
         except Exception as ex:
-                return make_response({"errors": [ex.__str__()]}, 400)
+            return make_response({"errors": [ex.__str__()]}, 400)
 
 api.add_resource(Recipes, '/recipes')
 
@@ -92,6 +122,10 @@ api.add_resource(RecipeById, '/recipes/<int:id>')
 
 
 class Ingredients(Resource):
+    def get(self):
+        ingredient = [ingredient.to_dict() for ingredient in Ingredient.query.all()]
+        return ingredient
+
     def post(self):
         data = request.get_json()
         try:
@@ -107,6 +141,27 @@ class Ingredients(Resource):
                 return make_response({"errors": [ex.__str__()]}, 400)
 
 api.add_resource(Ingredients, '/ingredients')
+
+class Inventories(Resource):
+    def post(self):
+        data = request.get_json()
+        try:
+            ingredient_id = data['ingredient_id']
+            recipe_id = data['recipe_id']
+            new_inventory = Inventory(
+                ingredient_id=ingredient_id,
+                recipe_id=recipe_id,
+                quantity=data['quantity']
+            )
+
+            db.session.add(new_inventory)
+            db.session.commit()
+
+            return make_response(new_inventory.to_dict(), 201)
+        except Exception as ex:
+            return make_response({"errors": [ex.__str__()]}, 400)
+
+api.add_resource(Inventories, '/inventories')
 
 
 if __name__ == '__main__':

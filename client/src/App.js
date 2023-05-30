@@ -14,7 +14,12 @@ import RecipeMenu from './Components/RecipeMenu';
 
 
 function App() {
-  const [userInfo, setUserInfo] = useState({})
+  const [userInfo, setUserInfo] = useState({
+    name: '',
+    recipe: '',
+    ingredients: [],
+    inventories: [],
+  })
   const [ingredients, setIngredients] = useState([]);
 
   const addIngredient = (ingredient) => {
