@@ -26,6 +26,7 @@ function Recipes({ userInfo, setUserInfo }) {
     initialValues: {
       name: '',
       description: '',
+      user_id: userInfo.id,
     },
     validationSchema: yup.object({
       name: yup.string().required('Must enter a name').max(150, 'Must be 150 chars max'),
@@ -35,7 +36,7 @@ function Recipes({ userInfo, setUserInfo }) {
       try {
         const recipeData = {
           ...values,
-          user_id: userInfo.id,
+          ingredients: selectedIngredients,
         };
         const requestOptions = {
           method: 'POST',

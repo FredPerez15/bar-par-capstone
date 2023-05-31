@@ -66,7 +66,7 @@ class Recipes(Resource):
     def post(self):
         data = request.get_json()
         try:
-            # Create the recipe instance
+
             new_recipe = Recipe(
                 name=data['name'],
                 description=data['description'],
@@ -75,10 +75,8 @@ class Recipes(Resource):
 
             db.session.add(new_recipe)
             db.session.flush()
-
-            # Create the ingredients and inventories
             for ingredient_id in data['ingredients']:
-                ingredient = Ingredient.query.get(ingredient_id)
+                ingredient = db.session.get(Ingredient, ingredient_id)
                 new_inventory = Inventory(
                     ingredient_id=ingredient.id,
                     recipe_id=new_recipe.id,
@@ -143,6 +141,11 @@ class Ingredients(Resource):
 api.add_resource(Ingredients, '/ingredients')
 
 class Inventories(Resource):
+    def get(self):
+        inventories = [inventory.to_dict() for inventory in Inventory.query.all()]
+        return inventories
+
+
     def post(self):
         data = request.get_json()
         try:
