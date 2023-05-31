@@ -101,6 +101,20 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+
+const FormContainer = styled('form')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+  maxWidth: '400px',
+  margin: '0 auto',
+});
+
+// const ErrorMessage = styled(Typography)({
+//   color: 'red',
+// });
 
 function Ingredients({ addIngredient }) {
   const navigate = useNavigate();
@@ -126,9 +140,9 @@ function Ingredients({ addIngredient }) {
         const response = await fetch('http://127.0.0.1:5000/ingredients', requestOptions);
         if (response.ok) {
           const createdIngredient = await response.json();
-  
+
           addIngredient(createdIngredient);
-  
+
           formik.resetForm();
           navigate('/ingredients');
         } else {
@@ -139,14 +153,14 @@ function Ingredients({ addIngredient }) {
       }
     },
   });
-  
+
   return (
     <>
-      <h1>Welcome to Ingredients page</h1>
+      <Typography variant="h1">Welcome to Ingredients page</Typography>
 
-      <form onSubmit={formik.handleSubmit}>
-        <label htmlFor="name">Ingredient Name</label>
-        <input
+      <FormContainer onSubmit={formik.handleSubmit}>
+        <TextField
+          label="Ingredient Name"
           value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -154,11 +168,12 @@ function Ingredients({ addIngredient }) {
           placeholder="Ingredient"
           id="name"
           name="name"
+          error={formik.touched.name && Boolean(formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
         />
-        {formik.touched.name && formik.errors.name ? <div>{formik.errors.name}</div> : null}
 
-        <label htmlFor="ing_type">Ingredient Type</label>
-        <input
+        <TextField
+          label="Ingredient Type"
           value={formik.values.ing_type}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -166,11 +181,12 @@ function Ingredients({ addIngredient }) {
           placeholder="Ingredient type"
           id="ing_type"
           name="ing_type"
+          error={formik.touched.ing_type && Boolean(formik.errors.ing_type)}
+          helperText={formik.touched.ing_type && formik.errors.ing_type}
         />
-        {formik.touched.ing_type && formik.errors.ing_type ? <div>{formik.errors.ing_type}</div> : null}
 
-        <label htmlFor="par_level">Par Level</label>
-        <input
+        <TextField
+          label="Par Level"
           value={formik.values.par_level}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -178,13 +194,12 @@ function Ingredients({ addIngredient }) {
           placeholder="Par level"
           id="par_level"
           name="par_level"
+          error={formik.touched.par_level && Boolean(formik.errors.par_level)}
+          helperText={formik.touched.par_level && formik.errors.par_level}
         />
-        {formik.touched.par_level && formik.errors.par_level ? (
-          <div>{formik.errors.par_level}</div>
-        ) : null}
 
-        <button type="submit">Submit</button>
-      </form>
+        <Button variant="contained" type="submit">Submit</Button>
+      </FormContainer>
     </>
   );
 }

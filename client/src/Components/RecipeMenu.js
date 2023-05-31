@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Typography,
+  Button,
+  TextField,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+} from "@mui/material";
+import { styled } from "@mui/system";
+
+const Container = styled("div")({
+  marginTop: "16px",
+});
 
 function RecipeMenu({ userInfo, setUserInfo }) {
   const [selectedItemId, setSelectedItemId] = useState('');
@@ -76,42 +90,53 @@ function RecipeMenu({ userInfo, setUserInfo }) {
 
 
   return (
-    <div>
-      <h1>Menu</h1>
-      {userInfo.recipes?.map((item) => (
-        <div key={item.id}>
-          <p>{item.name}</p>
-          <p>{item.description}</p>
-          <h4>Ingredients:</h4>
-          {userInfo.recipes.find((recipe) => recipe.id === item.id)?.ingredients.map((ingredient) => (
-              <p key={ingredient.id}>{ingredient.name}</p>
-              ))}
-          <button onClick={() => handleDelete(item.id)}>Remove</button>
-          {selectedItemId === item.id ? (
-            <div>
-              <input
-                type="text"
-                name="name"
-                value={updatedData.name || ''}
-                onChange={handleInputChange}
-                placeholder="Enter updated name"
-              />
-              <input
-                type="text"
-                name="description"
-                value={updatedData.description || ''}
-                onChange={handleInputChange}
-                placeholder="Enter updated description"
-              />
-              <button onClick={handleUpdate}>Update</button>
-            </div>
-          ) : (
-            <button onClick={() => handleUpdateButtonClick(item.id)}>Update</button>
-          )}
-        </div>
-      ))}
-    </div>
+    <Container>
+      <Typography variant="h1">Menu</Typography>
+      <Grid container spacing={2}>
+        {userInfo.recipes?.map((item) => (
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5">{item.name}</Typography>
+                <Typography variant="body1">{item.description}</Typography>
+                <Typography variant="h6">Ingredients:</Typography>
+                {userInfo.recipes.find((recipe) => recipe.id === item.id)?.ingredients.map((ingredient) => (
+                  <Typography key={ingredient.id}>{ingredient.name}</Typography>
+                ))}
+              </CardContent>
+              <CardActions>
+                <Button onClick={() => handleDelete(item.id)}>Remove</Button>
+                {selectedItemId === item.id ? (
+                  <div>
+                    <TextField
+                      type="text"
+                      name="name"
+                      value={updatedData.name || ''}
+                      onChange={handleInputChange}
+                      placeholder="Enter updated name"
+                    />
+                    <TextField
+                      type="text"
+                      name="description"
+                      value={updatedData.description || ''}
+                      onChange={handleInputChange}
+                      placeholder="Enter updated description"
+                    />
+                    <Button onClick={handleUpdate}>Update</Button>
+                  </div>
+                ) : (
+                  <Button onClick={() => handleUpdateButtonClick(item.id)}>Update</Button>
+                )}
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
-}
+};
+
+
+
 
 export default RecipeMenu;

@@ -2,6 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import {
+    Typography,
+    TextField,
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    Button,
+    Grid,
+    Paper,
+  } from '@mui/material';
+  import { styled } from '@mui/system';
+  
+  const Container = styled('div')({
+    marginTop: '16px',
+  });
+  
+  const PaperContainer = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(2),
+  }));
 
 function Recipes({ userInfo, setUserInfo }) {
   const navigate = useNavigate();
@@ -93,65 +112,88 @@ function Recipes({ userInfo, setUserInfo }) {
   });
 
   return (
-    <>
-      <h1>Welcome to Recipes page</h1>
+    <Container>
+      <Typography variant="h1">Welcome to Recipes page</Typography>
 
-      <form onSubmit={formik.handleSubmit}>
-        <label htmlFor="name">Recipe Name</label>
-        <input
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          type="text"
-          placeholder="Recipe name"
-          id="name"
-          name="name"
-        />
-        {formik.touched.name && formik.errors.name ? <div>{formik.errors.name}</div> : null}
+      <PaperContainer elevation={3}>
+        <form onSubmit={formik.handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Recipe Name"
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                type="text"
+                placeholder="Recipe name"
+                id="name"
+                name="name"
+                error={formik.touched.name && formik.errors.name}
+                helperText={formik.touched.name && formik.errors.name}
+              />
+            </Grid>
 
-        <input value={formik.values.user_id} type="hidden" />
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                label="Description"
+                value={formik.values.description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder="Description"
+                id="description"
+                name="description"
+                error={formik.touched.description && formik.errors.description}
+                helperText={formik.touched.description && formik.errors.description}
+              />
+            </Grid>
 
-        <label htmlFor="description">Description</label>
-        <input
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          type="text"
-          placeholder="Description"
-          id="description"
-          name="description"
-        />
-        {formik.touched.description && formik.errors.description ? (
-          <div>{formik.errors.description}</div>
-        ) : null}
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">Ingredients</Typography>
+              <FormGroup>
+                {ingredients.map((ingredient, index) => (
+                  <FormControlLabel
+                    key={ingredient.id}
+                    control={
+                      <Checkbox
+                        checked={selectedIngredients.includes(ingredient.id)}
+                        onChange={(event) => {
+                          if (event.target.checked) {
+                            setSelectedIngredients((prevIngredients) => [...prevIngredients, ingredient.id]);
+                          } else {
+                            setSelectedIngredients((prevIngredients) =>
+                              prevIngredients.filter((id) => id !== ingredient.id)
+                            );
+                          }
+                        }}
+                        name="ingredients"
+                        value={ingredient.id}
+                      />
+                    }
+                    label={ingredient.name}
+                  />
+                ))}
+              </FormGroup>
+              {formik.touched.ingredients && formik.errors.ingredients && (
+                <Typography variant="body2" color="error">
+                  {formik.errors.ingredients}
+                </Typography>
+              )}
+            </Grid>
 
-        <label htmlFor="ingredients">Ingredients</label>
-        {ingredients.map((ingredient) => (
-          <div key={ingredient.id}>
-            <input
-              type="checkbox"
-              id={ingredient.id}
-              name="ingredients"
-              value={ingredient.id}
-              checked={selectedIngredients.includes(ingredient.id)}
-              onChange={(event) => {
-                if (event.target.checked) {
-                  setSelectedIngredients((prevIngredients) => [...prevIngredients, ingredient.id]);
-                } else {
-                  setSelectedIngredients((prevIngredients) =>
-                    prevIngredients.filter((id) => id !== ingredient.id)
-                  );
-                }
-              }}
-            />
-            <label htmlFor={ingredient.id}>{ingredient.name}</label>
-          </div>
-        ))}
-
-        <button type="submit">Submit</button>
-      </form>
-    </>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary">
+                Submit
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </PaperContainer>
+    </Container>
   );
-}
+};
+
 
 export default Recipes;
