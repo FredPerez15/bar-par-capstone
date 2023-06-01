@@ -75,17 +75,17 @@ class Recipes(Resource):
 
             db.session.add(new_recipe)
             db.session.commit()
-            for ingredient_id in data['ingredients']:
-                ingredient = db.session.get(Ingredient, ingredient_id)
-                new_inventory = Inventory(
-                    ingredient_id=ingredient.id,
-                    recipe_id=new_recipe.id,
-                    quantity=1
-                )
+            # for ingredient_id in data['ingredients']:
+            #     ingredient = db.session.get(Ingredient, ingredient_id)
+            #     new_inventory = Inventory(
+            #         ingredient_id=ingredient.id,
+            #         recipe_id=new_recipe.id,
+            #         quantity=1
+            #     )
 
-                db.session.add(new_inventory)
+            #     db.session.add(new_inventory)
 
-            db.session.commit()
+            # db.session.commit()
 
             return make_response(new_recipe.to_dict(), 201)
         except Exception as ex:

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Button,
@@ -122,50 +122,48 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <Link to={`/recipes/${item.id}`}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5">{item.name}</Typography>
-                  <Typography variant="body1">{item.description}</Typography>
-                  <Typography variant="h6">Ingredients:</Typography>
-                  {userInfo.recipes.find((recipe) => recipe.id === item.id)
-                    ?.ingredients.map((ingredient) => (
-                      <div key={ingredient.id}>
-                        <Typography>{ingredient.par_level} {ingredient.name}</Typography>
-                        {/* <Typography>{ingredient.par_level}</Typography> */}
-                      </div>
-                    ))}
-                </CardContent>
-                <CardActions>
-                  <Button onClick={() => handleDelete(item.id)}>Remove</Button>
-                  {selectedItemId === item.id ? (
-                    <div>
-                      <TextField
-                        type="text"
-                        name="name"
-                        value={updatedData.name || ""}
-                        onChange={handleInputChange}
-                        placeholder="Enter updated name"
-                      />
-                      <TextField
-                        type="text"
-                        name="description"
-                        value={updatedData.description || ""}
-                        onChange={handleInputChange}
-                        placeholder="Enter updated description"
-                      />
-                      <Button onClick={handleUpdate}>Update</Button>
+            <Card>
+              <CardContent>
+                <Typography variant="h5">{item.name}</Typography>
+                <Typography variant="body1">{item.description}</Typography>
+                <Typography variant="h6">Ingredients:</Typography>
+                {userInfo.recipes.find((recipe) => recipe.id === item.id)
+                  ?.ingredients.map((ingredient) => (
+                    <div key={ingredient.id}>
+                      <Typography>
+                        {ingredient.par_level} {ingredient.name}
+                      </Typography>
+                      {/* <Typography>{ingredient.par_level}</Typography> */}
                     </div>
-                  ) : (
-                    <Button
-                      onClick={() => handleUpdateButtonClick(item.id)}
-                    >
-                      Update
-                    </Button>
-                  )}
-                </CardActions>
-              </Card>
-            </Link>
+                  ))}
+              </CardContent>
+              <CardActions>
+                <Button onClick={() => handleDelete(item.id)}>Remove</Button>
+                {selectedItemId === item.id ? (
+                  <div>
+                    <TextField
+                      type="text"
+                      name="name"
+                      value={updatedData.name || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter updated name"
+                    />
+                    <TextField
+                      type="text"
+                      name="description"
+                      value={updatedData.description || ""}
+                      onChange={handleInputChange}
+                      placeholder="Enter updated description"
+                    />
+                    <Button onClick={handleUpdate}>Update</Button>
+                  </div>
+                ) : (
+                  <Button onClick={() => handleUpdateButtonClick(item.id)}>
+                    Update
+                  </Button>
+                )}
+              </CardActions>
+            </Card>
           </Grid>
         ))}
       </Grid>
