@@ -159,7 +159,7 @@ function Ingredients({ addIngredient }) {
 
   return (
     <>
-      <Typography variant="h1">Welcome to Ingredients page</Typography>
+      <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder'>Welcome to Ingredients page</Typography>
 
       <FormContainer onSubmit={formik.handleSubmit}>
         <TextField

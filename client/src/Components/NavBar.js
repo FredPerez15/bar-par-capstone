@@ -5,6 +5,7 @@ const StyledLink = styled(Link)({
   color: "white",
   textDecoration: "none",
   marginRight: "1rem",
+  fontWeight:'bolder',
 });
 
 function Navbar() {

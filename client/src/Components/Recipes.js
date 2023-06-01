@@ -114,7 +114,7 @@ function Recipes({ userInfo, setUserInfo }) {
 
   return (
     <Container>
-      <Typography variant="h1">Welcome to Recipes page</Typography>
+      <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder' >Welcome to Recipes page</Typography>
 
       <PaperContainer elevation={3}>
         <form onSubmit={formik.handleSubmit}>

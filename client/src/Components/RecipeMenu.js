@@ -118,7 +118,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
 
   return (
     <Container>
-      <Typography variant="h1">Menu</Typography>
+      <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder'>Menu</Typography>
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
