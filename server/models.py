@@ -41,7 +41,7 @@ class User(db.Model, SerializerMixin):
 class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
 
-    serialize_rules = ('-created_at', '-updated_at', '-inventories', '-user')
+    serialize_rules = ('-created_at', '-updated_at', '-inventories', '-user', 'ingredients')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
@@ -50,8 +50,8 @@ class Recipe(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    inventories = db.relationship('Inventory', back_populates='recipes', lazy=True, cascade='all, delete, delete-orphan')
-    ingredients = db.relationship('Ingredient', back_populates='recipes', lazy=True)
+    inventories = db.relationship('Inventory', backref='recipe', lazy=True, cascade='all, delete, delete-orphan')
+    ingredients = db.relationship('Ingredient', secondary='inventories', lazy=True)
     
     @validates('name')
     def valid_username(self, key, name):
@@ -62,17 +62,17 @@ class Recipe(db.Model, SerializerMixin):
 class Ingredient(db.Model, SerializerMixin):
     __tablename__ = 'ingredients'
 
-    serialize_rules = ('-created_at', '-updated_at', '-recipe_id')
+    serialize_rules = ('-created_at', '-updated_at','-recipes', 'inventories')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     ing_type = db.Column(db.String, nullable=False)
     par_level = db.Column(db.Integer)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    recipes = db.relationship('Recipe', back_populates='ingredients', lazy=True)
+    inventories = db.relationship('Inventory', backref='ingredient', lazy=True, cascade='all, delete, delete-orphan')
+    recipes = db.relationship('Recipe', secondary='inventories', lazy=True)
 
     @validates('name')
     def valid_username(self, key, name):
@@ -89,7 +89,7 @@ class Ingredient(db.Model, SerializerMixin):
 class Inventory(db.Model, SerializerMixin):
     __tablename__ = 'inventories'
 
-    serialize_rules = ('-created_at', '-updated_at', '-recipe_id', '-recipes', '-ingredients')
+    serialize_rules = ('-created_at', '-updated_at', '-recipe', '-ingredient')
 
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Integer)
@@ -98,7 +98,6 @@ class Inventory(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 
-    recipes = db.relationship('Recipe', back_populates='inventories', lazy=True)
 
     @validates('quantity')
     def valid_username(self, key, quantity):

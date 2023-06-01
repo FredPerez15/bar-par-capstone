@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Typography,
   Button,
@@ -16,41 +16,73 @@ const Container = styled("div")({
 });
 
 function RecipeMenu({ userInfo, setUserInfo }) {
-  const [selectedItemId, setSelectedItemId] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState("");
   const [updatedData, setUpdatedData] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:5000/inventories?recipe_id=${selectedItemId}`
+        );
+        const data = await response.json();
+        const ingredients = data.map((inventory) => inventory.ingredient);
+        setUpdatedData((prevData) => ({
+          ...prevData,
+          ingredients: ingredients,
+        }));
+      } catch (error) {
+        console.log("Error occurred while fetching ingredients:", error);
+      }
+    };
+
+    if (selectedItemId !== "") {
+      fetchIngredients();
+    }
+  }, [selectedItemId]);
 
   const handleDelete = async (recipeId) => {
     try {
       const requestOptions = {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
       };
-      const response = await fetch(`http://127.0.0.1:5000/recipes/${recipeId}`, requestOptions);
+      const response = await fetch(
+        `http://127.0.0.1:5000/recipes/${recipeId}`,
+        requestOptions
+      );
       if (response.ok) {
-        const updatedRecipes = userInfo.recipes.filter((recipe) => recipe.id !== recipeId);
-        const updatedIngredients = userInfo.recipes.ingredients.filter((ingredient) => ingredient.recipe_id !== recipeId);
+        const updatedRecipes = userInfo.recipes.filter(
+          (recipe) => recipe.id !== recipeId
+        );
+        const updatedIngredients = userInfo.recipes.ingredients.filter(
+          (ingredient) => ingredient.recipe_id !== recipeId
+        );
         setUserInfo((prevUserInfo) => ({
           ...prevUserInfo,
           recipes: updatedRecipes,
           ingredients: updatedIngredients,
         }));
-        console.log('Recipe deleted successfully!');
+        console.log("Recipe deleted successfully!");
       } else {
-        console.log('Error deleting recipe');
+        console.log("Error deleting recipe");
       }
     } catch (error) {
-      console.log('Error occurred during deletion:', error);
+      console.log("Error occurred during deletion:", error);
     }
   };
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/recipes/${selectedItemId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedData),
-      });
+      const response = await fetch(
+        `http://127.0.0.1:5000/recipes/${selectedItemId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
+        }
+      );
       if (response.ok) {
         const updatedItems = userInfo.recipes.map((item) => {
           if (item.id === selectedItemId) {
@@ -62,12 +94,12 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           ...prevUserInfo,
           recipes: updatedItems,
         }));
-        console.log('Item updated!');
+        console.log("Item updated!");
       } else {
-        console.log('Error updating item');
+        console.log("Error updating item");
       }
     } catch (error) {
-      console.log('Error occurred during update:', error);
+      console.log("Error occurred during update:", error);
     }
   };
 
@@ -84,59 +116,60 @@ function RecipeMenu({ userInfo, setUserInfo }) {
     setUpdatedData({});
   };
 
-  // if (!userInfo || !userInfo.recipes || !userInfo.ingredients) {
-  //   return null; // Render null or a loading indicator while waiting for data
-  // }
-
-
   return (
     <Container>
       <Typography variant="h1">Menu</Typography>
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5">{item.name}</Typography>
-                <Typography variant="body1">{item.description}</Typography>
-                <Typography variant="h6">Ingredients:</Typography>
-                {userInfo.recipes.find((recipe) => recipe.id === item.id)?.ingredients.map((ingredient) => (
-                  <Typography key={ingredient.id}>{ingredient.name}</Typography>
-                ))}
-              </CardContent>
-              <CardActions>
-                <Button onClick={() => handleDelete(item.id)}>Remove</Button>
-                {selectedItemId === item.id ? (
-                  <div>
-                    <TextField
-                      type="text"
-                      name="name"
-                      value={updatedData.name || ''}
-                      onChange={handleInputChange}
-                      placeholder="Enter updated name"
-                    />
-                    <TextField
-                      type="text"
-                      name="description"
-                      value={updatedData.description || ''}
-                      onChange={handleInputChange}
-                      placeholder="Enter updated description"
-                    />
-                    <Button onClick={handleUpdate}>Update</Button>
-                  </div>
-                ) : (
-                  <Button onClick={() => handleUpdateButtonClick(item.id)}>Update</Button>
-                )}
-              </CardActions>
-            </Card>
+            <Link to={`/recipes/${item.id}`}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h5">{item.name}</Typography>
+                  <Typography variant="body1">{item.description}</Typography>
+                  <Typography variant="h6">Ingredients:</Typography>
+                  {userInfo.recipes.find((recipe) => recipe.id === item.id)
+                    ?.ingredients.map((ingredient) => (
+                      <Typography key={ingredient.id}>
+                        {ingredient.name}
+                      </Typography>
+                    ))}
+                </CardContent>
+                <CardActions>
+                  <Button onClick={() => handleDelete(item.id)}>Remove</Button>
+                  {selectedItemId === item.id ? (
+                    <div>
+                      <TextField
+                        type="text"
+                        name="name"
+                        value={updatedData.name || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter updated name"
+                      />
+                      <TextField
+                        type="text"
+                        name="description"
+                        value={updatedData.description || ""}
+                        onChange={handleInputChange}
+                        placeholder="Enter updated description"
+                      />
+                      <Button onClick={handleUpdate}>Update</Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={() => handleUpdateButtonClick(item.id)}
+                    >
+                      Update
+                    </Button>
+                  )}
+                </CardActions>
+              </Card>
+            </Link>
           </Grid>
         ))}
       </Grid>
     </Container>
   );
-};
-
-
-
+}
 
 export default RecipeMenu;

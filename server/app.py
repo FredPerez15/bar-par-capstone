@@ -22,6 +22,7 @@ class Login(Resource):
     def post(self):
         data = request.get_json()
         user = User.query.filter_by(email=data['email']).first()
+        print(user)
         if not user:
             try:
                 new_user = User(
@@ -74,7 +75,7 @@ class Recipes(Resource):
             )
 
             db.session.add(new_recipe)
-            db.session.flush()
+            db.session.commit()
             for ingredient_id in data['ingredients']:
                 ingredient = db.session.get(Ingredient, ingredient_id)
                 new_inventory = Inventory(

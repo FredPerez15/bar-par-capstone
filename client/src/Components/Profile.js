@@ -22,6 +22,7 @@ const Profile = ({ setUserInfo }) => {
                     })
             });
                 const data = await response.json();
+                console.log(data)
                 setUserInfo(data);
                 
             } catch (error) {
