@@ -128,7 +128,9 @@ function Ingredients({ addIngredient }) {
     validationSchema: yup.object({
       name: yup.string().required('Must enter a name').max(150, 'Must be 150 chars max'),
       ing_type: yup.string().required('Must enter a type of Ingredient').max(250, 'Must be 250 chars max'),
-      par_level: yup.number().required('Must enter a par level'),
+      par_level: yup.mixed().required('Must enter a par level').test('is-number-or-string', 'Par level must be a number or string', (value) => {
+      return typeof value === 'number' || typeof value === 'string';
+    }),
     }),
     onSubmit: async (values) => {
       try {
@@ -137,6 +139,7 @@ function Ingredients({ addIngredient }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values, null, 2),
         };
+        console.log(values)
         const response = await fetch('http://127.0.0.1:5000/ingredients', requestOptions);
         if (response.ok) {
           const createdIngredient = await response.json();

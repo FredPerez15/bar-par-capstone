@@ -67,7 +67,7 @@ class Ingredient(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     ing_type = db.Column(db.String, nullable=False)
-    par_level = db.Column(db.Integer)
+    par_level = db.Column(db.String(50))
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
 

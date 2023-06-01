@@ -20,27 +20,27 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   const [updatedData, setUpdatedData] = useState({});
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:5000/inventories?recipe_id=${selectedItemId}`
-        );
-        const data = await response.json();
-        const ingredients = data.map((inventory) => inventory.ingredient);
-        setUpdatedData((prevData) => ({
-          ...prevData,
-          ingredients: ingredients,
-        }));
-      } catch (error) {
-        console.log("Error occurred while fetching ingredients:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchIngredients = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://127.0.0.1:5000/inventories?recipe_id=${selectedItemId}`
+  //       );
+  //       const data = await response.json();
+  //       const ingredients = data.map((inventory) => inventory.ingredient);
+  //       setUpdatedData((prevData) => ({
+  //         ...prevData,
+  //         ingredients: ingredients,
+  //       }));
+  //     } catch (error) {
+  //       console.log("Error occurred while fetching ingredients:", error);
+  //     }
+  //   };
 
-    if (selectedItemId !== "") {
-      fetchIngredients();
-    }
-  }, [selectedItemId]);
+  //   if (selectedItemId !== "") {
+  //     fetchIngredients();
+  //   }
+  // }, [selectedItemId]);
 
   const handleDelete = async (recipeId) => {
     try {
@@ -130,9 +130,10 @@ function RecipeMenu({ userInfo, setUserInfo }) {
                   <Typography variant="h6">Ingredients:</Typography>
                   {userInfo.recipes.find((recipe) => recipe.id === item.id)
                     ?.ingredients.map((ingredient) => (
-                      <Typography key={ingredient.id}>
-                        {ingredient.name}
-                      </Typography>
+                      <div key={ingredient.id}>
+                        <Typography>{ingredient.par_level} {ingredient.name}</Typography>
+                        {/* <Typography>{ingredient.par_level}</Typography> */}
+                      </div>
                     ))}
                 </CardContent>
                 <CardActions>
