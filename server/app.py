@@ -166,6 +166,18 @@ class Inventories(Resource):
 
 api.add_resource(Inventories, '/inventories')
 
+class InventoriesByRecipeId(Resource):
+    def patch(self, recipe_id):
+        data = request.get_json()
+        inventory = Inventory.query.filter_by(recipe_id=recipe_id).first()
+        if not inventory:
+            return make_response({"error": "Inventory not found"}, 400)
+        for attr in data:
+            setattr(inventory, attr, data[attr])
+        db.session.commit()
+        return make_response(inventory.to_dict(), 202)
+
+api.add_resource(InventoriesByRecipeId, '/inventories/<int:recipe_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

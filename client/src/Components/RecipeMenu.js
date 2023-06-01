@@ -72,6 +72,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       console.log("Error occurred during deletion:", error);
     }
   };
+  console.log(userInfo.recipes)
 
   const handleUpdate = async () => {
     try {
@@ -116,6 +117,58 @@ function RecipeMenu({ userInfo, setUserInfo }) {
     setUpdatedData({});
   };
 
+  const handleInventoryUpdate = async (recipeId) => {
+    try {
+      const inventoryData = {
+        recipe_id: recipeId,
+      };
+  
+      const requestOptions = {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inventoryData),
+      };
+  
+      const response = await fetch(`http://127.0.0.1:5000/inventories/${recipeId}`, requestOptions);
+      if (response.ok) {
+        const updatedInventory = await response.json();
+  
+        // Subtract the par level amount from the quantity
+        const updatedQuantity = updatedInventory.quantity - inventoryData.par_level;
+        console.log(inventoryData)
+  
+        // Update the inventory quantity in the user info state
+        const updatedInventories = userInfo.inventories.map((inventory) => {
+          if (inventory.recipe_id === recipeId) {
+            return {
+              ...inventory,
+              quantity: updatedQuantity,
+            };
+          }
+          return inventory;
+        });
+  
+        // Update the user info state with the updated inventories
+        setUserInfo((prevUserInfo) => ({
+          ...prevUserInfo,
+          inventories: updatedInventories,
+        }));
+  
+        if (updatedQuantity <= 3) {
+          // Show alert if quantity is 3 or below
+          alert(`Low on ingredients for recipe: ${updatedInventory.recipe.name}`);
+        }
+  
+        console.log('Inventory updated successfully!');
+      } else {
+        console.log('Error updating inventory');
+      }
+    } catch (error) {
+      console.log('Error occurred during inventory update:', error);
+    }
+  };
+  
+
   return (
     <Container>
       <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder'>Menu</Typography>
@@ -138,6 +191,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
                   ))}
               </CardContent>
               <CardActions>
+              <Button onClick={() => handleInventoryUpdate(item.id)}>Update Inventory</Button>
                 <Button onClick={() => handleDelete(item.id)}>Remove</Button>
                 {selectedItemId === item.id ? (
                   <div>
