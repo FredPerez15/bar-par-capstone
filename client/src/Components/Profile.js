@@ -39,9 +39,9 @@ const Profile = ({ setUserInfo }) => {
     return (
       isAuthenticated && (
         <div>
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
-          <Navbar/>
+          {/* <h2>{user.name}</h2>
+          <p>{user.email}</p> */}
+          <Navbar />
         </div>
       )
     );

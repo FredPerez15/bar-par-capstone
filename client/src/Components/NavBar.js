@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, styled } from "@mui/material";
-import Logout from "./Logout";
-import Login from "./Login";
 
 const StyledLink = styled(Link)({
   color: "white",
@@ -14,7 +12,7 @@ function Navbar() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Bar Par
+        
             </Typography>
             <nav>
               <StyledLink to="/ingredients">Add Ingredients</StyledLink>

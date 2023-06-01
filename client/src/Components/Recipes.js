@@ -57,6 +57,7 @@ function Recipes({ userInfo, setUserInfo }) {
           ...values,
           ingredients: selectedIngredients,
         };
+
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,7 +72,7 @@ function Recipes({ userInfo, setUserInfo }) {
             const inventoryData = {
               ingredient_id: ingredientId,
               recipe_id: createdRecipe.id,
-              quantity: 1, // Provide the initial quantity
+              quantity: 18, // Provide the initial quantity
             };
             const inventoryResponse = await fetch('http://127.0.0.1:5000/inventories', {
               method: 'POST',
