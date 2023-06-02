@@ -11,6 +11,7 @@ import Recipes from './Components/Recipes';
 import Home from './Components/Home';
 import RecipeMenu from './Components/RecipeMenu';
 import logo from './Components/Bar-Par-logo.png'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -22,6 +23,8 @@ function App() {
     inventories: [],
   })
   const [ingredients, setIngredients] = useState([]);
+  const navigate = useNavigate();
+  const isAuthenticated = userInfo.email !== '';
 
   const addIngredient = (ingredient) => {
     setIngredients([...ingredients, ingredient]);
@@ -29,17 +32,17 @@ function App() {
 
   return (
     <div className="App">
-        <Profile setUserInfo={setUserInfo} />
-        <br></br>
-        <button><Login/></button>
-        <button><Logout/></button>
-        <br></br>
+      <Profile setUserInfo={setUserInfo} />
+      <br />
+        {!isAuthenticated && <button><Login/></button>}
+        {isAuthenticated && <button><Logout/></button>}
+      <br />
       <img src={logo} width={800} height={260} alt=' logo' />
         <Routes>
           <Route path='/recipe_menu' element={<RecipeMenu userInfo={userInfo} setUserInfo={setUserInfo}/>} />
           <Route path='/ingredients' element={<Ingredients userInfo={userInfo} setUserInfo={setUserInfo} addIngredient={addIngredient} setIngredients={setIngredients} />}/>
           <Route path='/recipes' element={<Recipes ingredients={ingredients} userInfo={userInfo} setUserInfo={setUserInfo}/>} />
-          <Route path='/home' element={<Home/>} />
+          <Route path='/' element={<Home/>} />
         </Routes>
     </div>
   );

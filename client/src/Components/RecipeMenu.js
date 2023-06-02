@@ -20,28 +20,6 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   const [updatedData, setUpdatedData] = useState({});
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchIngredients = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://127.0.0.1:5000/inventories?recipe_id=${selectedItemId}`
-  //       );
-  //       const data = await response.json();
-  //       const ingredients = data.map((inventory) => inventory.ingredient);
-  //       setUpdatedData((prevData) => ({
-  //         ...prevData,
-  //         ingredients: ingredients,
-  //       }));
-  //     } catch (error) {
-  //       console.log("Error occurred while fetching ingredients:", error);
-  //     }
-  //   };
-
-  //   if (selectedItemId !== "") {
-  //     fetchIngredients();
-  //   }
-  // }, [selectedItemId]);
-
   const handleDelete = async (recipeId) => {
     try {
       const requestOptions = {
@@ -56,7 +34,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
         const updatedRecipes = userInfo.recipes.filter(
           (recipe) => recipe.id !== recipeId
         );
-        const updatedIngredients = userInfo.recipes.ingredients.filter(
+        const updatedIngredients = userInfo.recipes?.ingredients?.filter(
           (ingredient) => ingredient.recipe_id !== recipeId
         );
         setUserInfo((prevUserInfo) => ({
@@ -65,6 +43,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           ingredients: updatedIngredients,
         }));
         console.log("Recipe deleted successfully!");
+        window.location.reload(); // Refresh the page
       } else {
         console.log("Error deleting recipe");
       }
@@ -72,7 +51,6 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       console.log("Error occurred during deletion:", error);
     }
   };
-  console.log(userInfo.recipes)
 
   const handleUpdate = async () => {
     try {
@@ -132,13 +110,14 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       const response = await fetch(`http://127.0.0.1:5000/inventories/${recipeId}`, requestOptions);
       if (response.ok) {
         const updatedInventory = await response.json();
+        console.log(updatedInventory)
   
         // Subtract the par level amount from the quantity
-        const updatedQuantity = updatedInventory.quantity - inventoryData.par_level;
-        console.log(inventoryData)
+        const updatedQuantity = updatedInventory.quantity - 2;
+        console.log(updatedInventory.quantity)
   
         // Update the inventory quantity in the user info state
-        const updatedInventories = userInfo.inventories.map((inventory) => {
+        const updatedInventories = userInfo.inventories?.map((inventory) => {
           if (inventory.recipe_id === recipeId) {
             return {
               ...inventory,
@@ -156,8 +135,9 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   
         if (updatedQuantity <= 3) {
           // Show alert if quantity is 3 or below
-          alert(`Low on ingredients for recipe: ${updatedInventory.recipe.name}`);
+          alert(`Low on ingredients for recipe: ${updatedInventory.recipe_id === userInfo.recipes.id}`);
         }
+        console.log(userInfo.recipes.id)
   
         console.log('Inventory updated successfully!');
       } else {
@@ -168,7 +148,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
     }
   };
   
-
+  
   return (
     <Container>
       <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder'>Menu</Typography>

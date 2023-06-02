@@ -3,24 +3,24 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import {
-    Typography,
-    TextField,
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    Button,
-    Grid,
-    Paper,
-  } from '@mui/material';
-  import { styled } from '@mui/system';
-  
-  const Container = styled('div')({
-    marginTop: '16px',
-  });
-  
-  const PaperContainer = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(2),
-  }));
+  Typography,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Button,
+  Grid,
+  Paper,
+} from '@mui/material';
+import { styled } from '@mui/system';
+
+const Container = styled('div')({
+  marginTop: '16px',
+});
+
+const PaperContainer = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
 
 function Recipes({ userInfo, setUserInfo }) {
   const navigate = useNavigate();
@@ -112,9 +112,21 @@ function Recipes({ userInfo, setUserInfo }) {
     },
   });
 
+  // Group ingredients by ing_type
+  const ingredientsByType = ingredients.reduce((groupedIngredients, ingredient) => {
+    const { ing_type } = ingredient;
+    if (!groupedIngredients[ing_type]) {
+      groupedIngredients[ing_type] = [];
+    }
+    groupedIngredients[ing_type].push(ingredient);
+    return groupedIngredients;
+  }, {});
+
   return (
     <Container>
-      <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder' >Welcome to Recipes page</Typography>
+      <Typography variant="h2" fontFamily="fantasy" fontWeight="bolder">
+        Welcome to Recipes page
+      </Typography>
 
       <PaperContainer elevation={3}>
         <form onSubmit={formik.handleSubmit}>
@@ -151,38 +163,35 @@ function Recipes({ userInfo, setUserInfo }) {
               />
             </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1">Ingredients</Typography>
-              <FormGroup>
-                {ingredients.map((ingredient, index) => (
-                  <FormControlLabel
-                    key={ingredient.id}
-                    control={
-                      <Checkbox
-                        checked={selectedIngredients.includes(ingredient.id)}
-                        onChange={(event) => {
-                          if (event.target.checked) {
-                            setSelectedIngredients((prevIngredients) => [...prevIngredients, ingredient.id]);
-                          } else {
-                            setSelectedIngredients((prevIngredients) =>
-                              prevIngredients.filter((id) => id !== ingredient.id)
-                            );
-                          }
-                        }}
-                        name="ingredients"
-                        value={ingredient.id}
-                      />
-                    }
-                    label={ingredient.name}
-                  />
-                ))}
-              </FormGroup>
-              {formik.touched.ingredients && formik.errors.ingredients && (
-                <Typography variant="body2" color="error">
-                  {formik.errors.ingredients}
-                </Typography>
-              )}
-            </Grid>
+            {Object.entries(ingredientsByType).map(([ing_type, ingredientsOfType]) => (
+              <Grid item xs={12} key={ing_type}>
+                <Typography fontFamily='fantasy' fontWeight='bolder' variant="h6">{ing_type}</Typography>
+                <FormGroup>
+                  {ingredientsOfType.map((ingredient) => (
+                    <FormControlLabel
+                      key={ingredient.id}
+                      control={
+                        <Checkbox
+                          checked={selectedIngredients.includes(ingredient.id)}
+                          onChange={(event) => {
+                            if (event.target.checked) {
+                              setSelectedIngredients((prevIngredients) => [...prevIngredients, ingredient.id]);
+                            } else {
+                              setSelectedIngredients((prevIngredients) =>
+                                prevIngredients.filter((id) => id !== ingredient.id)
+                              );
+                            }
+                          }}
+                          name="ingredients"
+                          value={ingredient.id}
+                        />
+                      }
+                      label={ingredient.name}
+                    />
+                  ))}
+                </FormGroup>
+              </Grid>
+            ))}
 
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="primary">
@@ -194,7 +203,6 @@ function Recipes({ userInfo, setUserInfo }) {
       </PaperContainer>
     </Container>
   );
-};
-
+}
 
 export default Recipes;

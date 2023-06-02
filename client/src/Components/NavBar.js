@@ -19,7 +19,7 @@ function Navbar() {
               <StyledLink to="/ingredients">Add Ingredients</StyledLink>
               <StyledLink to="/recipes">Add Recipes</StyledLink>
               <StyledLink to="/recipe_menu">My Menu</StyledLink>
-              <StyledLink to="/home">Home</StyledLink>
+              <StyledLink to="/">Home</StyledLink>
             </nav>
           </Toolbar>
         </AppBar>
