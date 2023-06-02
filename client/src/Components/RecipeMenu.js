@@ -18,6 +18,7 @@ const Container = styled("div")({
 function RecipeMenu({ userInfo, setUserInfo }) {
   const [selectedItemId, setSelectedItemId] = useState("");
   const [updatedData, setUpdatedData] = useState({});
+  const [showForm, setShowForm] = useState(false); // State variable for controlling form visibility
   const navigate = useNavigate();
 
   const handleDelete = async (recipeId) => {
@@ -74,6 +75,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           recipes: updatedItems,
         }));
         console.log("Item updated!");
+        setShowForm(false); // Hide the form after successful update
       } else {
         console.log("Error updating item");
       }
@@ -93,6 +95,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   const handleUpdateButtonClick = (itemId) => {
     setSelectedItemId(itemId);
     setUpdatedData({});
+    setShowForm(true); // Show the form when Update button is clicked
   };
 
   const handleInventoryUpdate = async (recipeId) => {
@@ -147,11 +150,12 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       console.log('Error occurred during inventory update:', error);
     }
   };
-  
-  
+
   return (
     <Container>
-      <Typography variant="h2" fontFamily='fantasy' fontWeight='bolder'>Menu</Typography>
+      <Typography variant="h2" fontFamily="fantasy" fontWeight="bolder">
+        Menu
+      </Typography>
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
@@ -166,14 +170,15 @@ function RecipeMenu({ userInfo, setUserInfo }) {
                       <Typography>
                         {ingredient.par_level} {ingredient.name}
                       </Typography>
-                      {/* <Typography>{ingredient.par_level}</Typography> */}
                     </div>
                   ))}
               </CardContent>
               <CardActions>
-              <Button onClick={() => handleInventoryUpdate(item.id)}>Update Inventory</Button>
+                <Button onClick={() => handleInventoryUpdate(item.id)}>
+                  Update Inventory
+                </Button>
                 <Button onClick={() => handleDelete(item.id)}>Remove</Button>
-                {selectedItemId === item.id ? (
+                {selectedItemId === item.id && showForm ? (
                   <div>
                     <TextField
                       type="text"
