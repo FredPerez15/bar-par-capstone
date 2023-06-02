@@ -25,12 +25,10 @@ const CardContentWrapper = styled(CardContent)({
   justifyContent: "space-between",
 });
 
-
 function RecipeMenu({ userInfo, setUserInfo }) {
   const [selectedItemId, setSelectedItemId] = useState("");
   const [updatedData, setUpdatedData] = useState({});
-  const [showForm, setShowForm] = useState(false); // State variable for controlling form visibility
-  const navigate = useNavigate();
+  const [showForm, setShowForm] = useState(false); 
 
   const handleDelete = async (recipeId) => {
     try {
@@ -55,7 +53,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           ingredients: updatedIngredients,
         }));
         console.log("Recipe deleted successfully!");
-        window.location.reload(); // Refresh the page
+        window.location.reload(); 
       } else {
         console.log("Error deleting recipe");
       }
@@ -73,7 +71,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedData),
         }
-      );
+        );
       if (response.ok) {
         const updatedItems = userInfo.recipes.map((item) => {
           if (item.id === selectedItemId) {
@@ -86,7 +84,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           recipes: updatedItems,
         }));
         console.log("Item updated!");
-        setShowForm(false); // Hide the form after successful update
+        setShowForm(false); 
       } else {
         console.log("Error updating item");
       }
@@ -106,7 +104,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   const handleUpdateButtonClick = (itemId) => {
     setSelectedItemId(itemId);
     setUpdatedData({});
-    setShowForm(true); // Show the form when Update button is clicked
+    setShowForm(true); 
   };
 
   const handleInventoryUpdate = async (recipeId) => {
@@ -126,11 +124,9 @@ function RecipeMenu({ userInfo, setUserInfo }) {
         const updatedInventory = await response.json();
         console.log(updatedInventory)
   
-        // Subtract the par level amount from the quantity
-        const updatedQuantity = updatedInventory.quantity - 2;
-        console.log(updatedInventory.quantity)
+        const updatedQuantity = updatedInventory.quantity - selectedItemId;
+        console.log(selectedItemId)
   
-        // Update the inventory quantity in the user info state
         const updatedInventories = userInfo.inventories?.map((inventory) => {
           if (inventory.recipe_id === recipeId) {
             return {
@@ -141,15 +137,13 @@ function RecipeMenu({ userInfo, setUserInfo }) {
           return inventory;
         });
   
-        // Update the user info state with the updated inventories
         setUserInfo((prevUserInfo) => ({
           ...prevUserInfo,
           inventories: updatedInventories,
         }));
   
         if (updatedQuantity <= 3) {
-          // Show alert if quantity is 3 or below
-          alert(`Low on ingredients for recipe: ${updatedInventory.recipe_id === userInfo.recipes.id}`);
+          alert(`Low on ingredients for recipe: ${updatedInventory.recipe_id}`);
         }
         console.log(userInfo.recipes.id)
   
@@ -165,7 +159,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
   return (
     <Container>
       <Typography variant="h2" fontFamily="fantasy" fontWeight="bolder">
-        Menu
+        My Menu
       </Typography>
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (

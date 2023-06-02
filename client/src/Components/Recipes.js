@@ -67,12 +67,11 @@ function Recipes({ userInfo, setUserInfo }) {
         if (response.ok) {
           const createdRecipe = await response.json();
 
-          // Create inventory instances for each selected ingredient and the current recipe
           const inventoryPromises = selectedIngredients.map(async (ingredientId) => {
             const inventoryData = {
               ingredient_id: ingredientId,
               recipe_id: createdRecipe.id,
-              quantity: 18, // Provide the initial quantity
+              quantity: 18, 
             };
             const inventoryResponse = await fetch('http://127.0.0.1:5000/inventories', {
               method: 'POST',
@@ -90,7 +89,6 @@ function Recipes({ userInfo, setUserInfo }) {
 
           Promise.all(inventoryPromises)
             .then((inventories) => {
-              // Update the user info with the new recipe and inventories
               setUserInfo((prevUserInfo) => ({
                 ...prevUserInfo,
                 recipes: [...prevUserInfo.recipes, createdRecipe],
@@ -112,7 +110,6 @@ function Recipes({ userInfo, setUserInfo }) {
     },
   });
 
-  // Group ingredients by ing_type
   const ingredientsByType = ingredients.reduce((groupedIngredients, ingredient) => {
     const { ing_type } = ingredient;
     if (!groupedIngredients[ing_type]) {
@@ -125,7 +122,7 @@ function Recipes({ userInfo, setUserInfo }) {
   return (
     <Container>
       <Typography variant="h2" fontFamily="fantasy" fontWeight="bolder">
-        Welcome to Recipes page
+        Create Your Cocktails
       </Typography>
 
       <PaperContainer elevation={3}>
@@ -133,7 +130,7 @@ function Recipes({ userInfo, setUserInfo }) {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                fullWidth
+                sx={{ width: "1000px" }}
                 label="Recipe Name"
                 value={formik.values.name}
                 onChange={formik.handleChange}
@@ -149,7 +146,7 @@ function Recipes({ userInfo, setUserInfo }) {
 
             <Grid item xs={12}>
               <TextField
-                fullWidth
+                sx={{ width: "1000px" }}
                 multiline
                 label="Description"
                 value={formik.values.description}
@@ -172,6 +169,7 @@ function Recipes({ userInfo, setUserInfo }) {
                       key={ingredient.id}
                       control={
                         <Checkbox
+                        sx={{ width: "300px" }}
                           checked={selectedIngredients.includes(ingredient.id)}
                           onChange={(event) => {
                             if (event.target.checked) {
