@@ -15,6 +15,17 @@ const Container = styled("div")({
   marginTop: "16px",
 });
 
+const CardContainer = styled(Card)({
+  height: "100%",
+});
+
+const CardContentWrapper = styled(CardContent)({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+});
+
+
 function RecipeMenu({ userInfo, setUserInfo }) {
   const [selectedItemId, setSelectedItemId] = useState("");
   const [updatedData, setUpdatedData] = useState({});
@@ -159,8 +170,8 @@ function RecipeMenu({ userInfo, setUserInfo }) {
       <Grid container spacing={2}>
         {userInfo.recipes?.map((item) => (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <Card>
-              <CardContent>
+            <CardContainer>
+              <CardContentWrapper>
                 <Typography variant="h5">{item.name}</Typography>
                 <Typography variant="body1">{item.description}</Typography>
                 <Typography variant="h6">Ingredients:</Typography>
@@ -172,7 +183,7 @@ function RecipeMenu({ userInfo, setUserInfo }) {
                       </Typography>
                     </div>
                   ))}
-              </CardContent>
+              </CardContentWrapper>
               <CardActions>
                 <Button onClick={() => handleInventoryUpdate(item.id)}>
                   Update Inventory
@@ -202,12 +213,13 @@ function RecipeMenu({ userInfo, setUserInfo }) {
                   </Button>
                 )}
               </CardActions>
-            </Card>
+            </CardContainer>
           </Grid>
         ))}
       </Grid>
     </Container>
   );
 }
+
 
 export default RecipeMenu;
